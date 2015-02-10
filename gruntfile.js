@@ -20,6 +20,7 @@ module.exports = function(grunt) {
         clean: ['build'],
         copy: [
             { expand: true, flatten: true, src: ['html/index.html'], dest: 'build/' },
+            { expand: true, flatten: true, src: ['lib/*'], dest: 'build/lib/' },
             { expand: true, flatten: true, src: ['css/*'], dest: 'build/css/' }
         ],
         simplemocha: {
