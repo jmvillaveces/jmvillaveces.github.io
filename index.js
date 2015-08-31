@@ -1,29 +1,28 @@
-jQuery = $ = require('jquery');
 require('bootstrap');
 
-$('#hiddata').hide();
-$('#pdf').click(function(e){
-    
-    $('#hiddata').show();
-    var pdf = new jsPDF('p','pt','a4');
-    pdf.addHTML($('#page1').get(0), function() {
-        $('#hiddata').hide();
-        pdf.addPage();
-        pdf.addHTML($('#page2').get(0), function() {
-            pdf.save('JMV_cv.pdf');
-        });
-    });
-    
+
+// jQuery for page scrolling feature - requires jQuery Easing plugin
+$('a.page-scroll').bind('click', function(event) {
+    var $anchor = $(this);
+    $('html, body').stop().animate({
+        scrollTop: ($($anchor.attr('href')).offset().top - 50)
+    }, 1250, 'easeInOutExpo');
+    event.preventDefault();
 });
 
-$('#logo').mouseover(function(){
-    $('#logo').attr('src', 'img/space_invader2.png');
+// Highlight the top nav as scrolling occurs
+$('body').scrollspy({
+    target: '.navbar-fixed-top',
+    offset: 51
 });
 
+// Fit Text Plugin for Main Header
+$("h1").fitText(
+    1.2, {
+        minFontSize: '35px',
+        maxFontSize: '65px'
+    }
+);
 
-$('#logo').mouseout(function(){
-    setTimeout(function(){
-        $('#logo').attr('src', 'img/space_invader.png');
-    }, 800);
-});
-
+// Initialize WOW.js Scrolling Animations
+new WOW().init();
