@@ -15,9 +15,9 @@ module.exports = function(grunt) {
             }
         },
         browserify: {
-            'build/pages.js': ['index.js']
+            'dist/app.js': ['index.js']
         },
-        clean: ['build'],
+        clean: ['dist'],
         copy: [
             { expand: true, flatten: true, src: ['html/index.html'], dest: 'build/' },
             { expand: true, flatten: true, src: ['lib/*'], dest: 'build/lib/' },
@@ -32,11 +32,23 @@ module.exports = function(grunt) {
                 reporter: 'tap'
             },
             all: { src: ['tests/*.js'] }
+        },
+        less: {
+            development: {
+                options: {
+                    compress: true,
+                    yuicompress: true,
+                    optimization: 2
+                },
+                files: {
+                    "dist/css/creative.css": "less/creative.less" // destination file and source file
+                }
+            }
         }
     });
     
     //Tasks
-    grunt.registerTask('build', ['clean', 'jshint', 'simplemocha', 'copy', 'browserify']); //Generates build folder
+    grunt.registerTask('dist', ['jshint', 'simplemocha', 'less', 'browserify']); //Generates build folder
     
     // Load the plugins
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -44,4 +56,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-simple-mocha');
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-less');
 };
