@@ -2,6 +2,10 @@
 jQuery = $ = require('jquery');
 
 require('bootstrap');
+
+// Init WOW
+new WOW().init();
+
 var noise = require('./js/perlin.js').noise;
 
 var d3 = require('d3');
