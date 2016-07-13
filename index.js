@@ -1,116 +1,52 @@
+jQuery = $ = require('jquery');
+
 require('bootstrap');
-//THREE = require('three');
-THREE = require('./js/three.js');
+var noise = require('./js/perlin.js').noise;
 
+var d3 = require('d3');
 
-// jQuery for page scrolling feature - requires jQuery Easing plugin
-$('a.page-scroll').bind('click', function(event) {
-    var $anchor = $(this);
-    $('html, body').stop().animate({
-        scrollTop: ($($anchor.attr('href')).offset().top - 50)
-    }, 1250, 'easeInOutExpo');
-    event.preventDefault();
-});
-
-// Highlight the top nav as scrolling occurs
-$('body').scrollspy({
-    target: '.navbar-fixed-top',
-    offset: 51
-});
-
-// Fit Text Plugin for Main Header
-$("h1").fitText(
-    1.2, {
-        minFontSize: '35px',
-        maxFontSize: '65px'
+var parent = $('#three').parent(),
+    width = parent.width(),
+    height = parent.height(),
+    n = 30,
+    r = width / n / 2,
+    dx = r * 2 * Math.sin(Math.PI / 3),
+    dy = r * 1.5;
+noise.seed(Math.random());
+var svg = d3.select("#three").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+var data = [];
+for (var y = -r, odd = false; y < height + 2 * r; y += dy, odd = !odd) {
+    for (var x = odd ? -dx / 2 : 0; x < width + dx; x += dx) {
+        data.push([x, y]);
     }
-);
-
-// Initialize WOW.js Scrolling Animations
-new WOW().init();
-
-/* Init three stuff */
-var camera, scene, renderer;
-var geometry, material, mesh;
-var lastRenderTime = Date.now();
-var theta = 0;
-var radius = 600;
-
-init();
-animate();
-
-function init() {
-
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.z = 100;
-
-    scene = new THREE.Scene();
-
-    geometry = new THREE.IcosahedronGeometry(400.0, 1);
-    material = new THREE.MeshBasicMaterial({
-        color: 0xf0f0f0, 
-        opacity: 0
+}
+var hexes = svg.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d) {
+        return "translate(" + d + ")";
+    })
+    .append("path")
+    .attr("stroke", "#95a5a6")
+    .attr("stroke-width", 0.5)
+    .attr("fill", "none")
+    .attr("d", "M" + hexagon(r).join("l") + "Z");
+d3.timer(function(t) {
+    hexes.attr("transform", function(d, i) {
+        return "scale(" + (1 + 1 * noise.simplex3(d[0] / 100, d[1] / 100, t / 7000)) + ")";
     });
-
-    mesh = new THREE.Mesh(geometry, material);
-    var wireframe = new THREE.EdgesHelper( mesh, 0x3D72A4 );
-    
-    mesh.position.x = 0.0;
-    mesh.position.y = 0.0;
-    mesh.position.z = 0.0;
-
-    
-    scene.add(mesh);
-    scene.add(wireframe);
-    
-    var bigCircle = document.createElementNS( 'http://www.w3.org/2000/svg', 'circle' );
-    bigCircle.setAttribute( 'fill', '#3D72A4' );
-    bigCircle.setAttribute( 'r', '5' );
-    
-    for ( var i = 0; i < mesh.geometry.vertices.length; i ++ ) {
-         var vertex = new THREE.SVGObject(bigCircle.cloneNode());
-         vertex.position.x = mesh.geometry.vertices[i].x;
-         vertex.position.y = mesh.geometry.vertices[i].y;
-         vertex.position.z = mesh.geometry.vertices[i].z;
-         vertex.transparent = true;
-         scene.add(vertex);
-    }
-    
-    renderer = new THREE.SVGRenderer();
-    renderer.setClearColor( 0xffffff );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    document.getElementById('three').appendChild(renderer.domElement);
-
+});
+function hexagon(radius) {
+    var x0 = 0, y0 = 0;
+    return d3.range(0, 2 * Math.PI, Math.PI / 3).map(function(angle) {
+        var x1 = Math.sin(angle) * radius,
+            y1 = -Math.cos(angle) * radius,
+            dx = x1 - x0,
+            dy = y1 - y0;
+        x0 = x1;
+        y0 = y1;
+        return [dx, dy];
+    });
 }
-
-function animate() {
-    requestAnimationFrame( animate );
-    render();
-}
-
-function render() {
-    // Time delta in seconds
-    var timeDelta = (Date.now() - lastRenderTime) / 1000.0;
-    lastRenderTime = Date.now();
-
-    // Rotate Camera
-    theta += (6.0 * timeDelta);
-
-    camera.position.x = radius * Math.sin(THREE.Math.degToRad(theta));
-    camera.position.y = radius * Math.sin(THREE.Math.degToRad(theta));
-    camera.position.z = radius * Math.cos(THREE.Math.degToRad(theta));
-
-    var focus = scene.position.clone();
-    focus.x += 150.0;
-    focus.y += -80.0;
-    camera.lookAt( focus );
-
-    camera.updateMatrixWorld();
-
-    // Render
-    renderer.render(scene, camera);
-}
-
-
