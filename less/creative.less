@@ -1,5 +1,162 @@
+@import (inline) "node_modules/bootstrap/dist/css/bootstrap.css";
+
 @import "variables.less";
 @import "mixins.less";
+
+/* TIMELINE */
+.timeline {
+    position: relative;
+}
+
+.timeline:before {
+	background: @silver;
+  bottom: 0;
+  content: "";
+  left: 18px;
+  position: absolute;
+  top: 0;
+  width: 3px;
+	height:100%;
+}
+
+.timeline:after{
+	background: #ffffff;
+	border:3px solid @silver;
+	font-family: 'FontAwesome';
+	top:0;
+	left:-5px;
+	width:50px;
+	height:50px;
+	position: absolute;
+	text-align:center;
+	color:#333333;
+	font-size:20px;
+	line-height:45px;
+  .rounded(25px);
+}
+
+.timeline.experience:after{
+	.icon('\f0b1'); //Portfolio
+}
+
+.timeline.education:after{
+	.icon('\f19d'); //birret
+}
+
+.timeline .margTop {
+    margin-top: 70px !important;
+}
+
+.timeline h4 {
+    font-weight: 700;
+}
+
+.timeline .time-point {
+  padding-left: 50px;
+  padding-top: 20px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.timeline .time-point:after {
+    background: @theme-primary;
+    border: 3px solid #ffffff;
+    content: "";
+    height: 20px;
+    left: 9.5px;
+    position: absolute;
+    text-align: center;
+    top: 30px;
+    width: 20px;
+    .rounded(25px);
+}
+
+.timeline .current {
+  color: white;
+  background: @theme-primary;
+  .rounded(6px);
+  padding: 1px 12px;
+  font-style: italic;
+}
+
+/* Skills list */
+
+
+.skills h4 {
+    display: block;
+    text-transform: uppercase;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: #666666;
+}
+
+.skills ol, .skills ul {
+    list-style: none;
+}
+
+.skills .title {
+  left: -15px;
+  padding: 5px 25px;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  top: 0;
+  .rotation(90deg);
+}
+
+.skills .title.dev{
+  border: 1px dashed @dev;
+}
+
+.skills .title.libs{
+  border: 1px dashed @libs;
+}
+
+.skills .vc {
+    .flex-display();
+    align-items: center;
+    -webkit-align-items: center;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+}
+
+/* Progress Bar */
+.skills .progress {
+    background: #ffffff;
+    display: block;
+    height: 16px;
+    margin: 8px 0 14px;
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    .rounded(50px);
+}
+
+.skills .progress.dev{
+  border: 1px solid @dev;
+}
+
+.skills .progress.libs{
+  border: 1px solid @libs;
+}
+
+.skills .percentage{
+  .rounded(50px);
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  background-color: #cd5353;
+}
+
+.skills .percentage.dev{
+  background-color: @dev;
+}
+
+.skills .percentage.libs{
+  background-color: @libs;
+}
 
 // Global Components
 html,
@@ -9,7 +166,7 @@ body {
 }
 
 body {
-    .serif-font;
+    .sans-serif-font;
 }
 
 hr {
