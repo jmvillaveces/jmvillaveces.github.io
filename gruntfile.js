@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-    
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -18,21 +18,16 @@ module.exports = function(grunt) {
             'dist/app.js': ['index.js']
         },
         clean: ['dist'],
-        copy: [
-            { expand: true, flatten: true, src: ['html/index.html'], dest: 'build/' },
-            { expand: true, flatten: true, src: ['lib/*'], dest: 'build/lib/' },
-            { expand: true, flatten: true, src: ['css/*'], dest: 'build/css/' }
-        ],
-        simplemocha: {
-            options: {
-                globals: ['expect'],
-                timeout: 3000,
-                ignoreLeaks: false,
-                ui: 'bdd',
-                reporter: 'tap'
-            },
-            all: { src: ['tests/*.js'] }
+        'http-server': {
+            'dev': {
+                port: 8282,
+                host: "0.0.0.0",
+
+                // Tell grunt task to open the browser
+                openBrowser : true
+            }
         },
+
         less: {
             development: {
                 options: {
@@ -46,15 +41,15 @@ module.exports = function(grunt) {
             }
         }
     });
-    
+
     //Tasks
-    grunt.registerTask('dist', ['jshint', 'simplemocha', 'less', 'browserify']); //Generates build folder
-    
+    grunt.registerTask('dist', ['jshint', 'less', 'browserify']); //Generates build folder
+    grunt.registerTask('serve', ['http-server']);
+
     // Load the plugins
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-simple-mocha');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-http-server');
 };
